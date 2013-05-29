@@ -5,15 +5,15 @@ Usage
 
 You can run this without modifying your project with the following command:
 
-    mvn com.github.mdr:maven-dependencygraph-plugin:1.2-SNAPSHOT:graph
+    mvn com.github.mdr:maven-dependencygraph-plugin:0.0.1:graph
 
 Larger graphs might need to be piped through a pager, e.g. `less -S`:
 
-    mvn com.github.mdr:maven-dependencygraph-plugin:1.2-SNAPSHOT:graph | less -S
+    mvn com.github.mdr:maven-dependencygraph-plugin:0.0.1:graph | less -S
 
 You can also customise some of the drawing options:
 
-    mvn -Dgraph.vertical -Dgraph.rounded com.github.mdr:maven-dependencygraph-plugin:1.2-SNAPSHOT:graph | less -S
+    mvn -Dgraph.vertical -Dgraph.rounded com.github.mdr:maven-dependencygraph-plugin:0.0.1:graph | less -S
 
 Options
 =======
