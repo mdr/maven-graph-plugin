@@ -25,14 +25,14 @@ import java.net.URL;
  * Date: 10/5/11
  * Time: 12:36 PM
  */
-public class GraphMLGeneratorTest extends TestCase {
+public class GraphMLGeneratorTest /* extends TestCase */ {
 
     private static final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
     private Validator schemaValidator;
 
     private final GraphMLGenerator graphMLGenerator = new GraphMLGenerator();
 
-    @Override
+//    @Override
     protected void setUp() throws Exception {
         URL resource = Thread.currentThread().getContextClassLoader().getResource("ygraphml.xsd");
         Schema schema = factory.newSchema(resource);
