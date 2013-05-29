@@ -18,8 +18,8 @@ You can also customise some of the drawing options:
 Options
 =======
 
-* `graph.unicode` -- if true (default), use Unicode box-drawing characters, else use ASCII only
-* `graph.vertical` -- if true, layers flow top to bottom, else left to right
+* `graph.unicode` -- if true (default) use Unicode box-drawing characters, else use ASCII only
+* `graph.vertical` -- if true layers flow top to bottom, else left to right
 * `graph.doubleVertices` -- if true, use double line box characters for vertices (requires graph.unicode)
 * `graph.rounded` -- if true, draw corners using rounded characters (requires graph.unicode)
 

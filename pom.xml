@@ -5,13 +5,13 @@
         <artifactId>oss-parent</artifactId>
         <version>7</version>
     </parent>
-    <groupId>com.github.janssk1</groupId>
+    <groupId>com.github.mdr</groupId>
     <artifactId>maven-dependencygraph-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     <version>1.2-SNAPSHOT</version>
     <name>Maven Dependency Graph Plugin</name>
-    <description>Generates a dependency graph in graphml format</description>
-    <url>https://github.com/janssk1/maven-graph-plugin/wiki/Manual</url>
+    <description>Generates a text representation (e.g. ASCII-art) of a dependency graph</description>
+    <url>https://github.com/mdr/maven-graph-plugin</url>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -23,6 +23,10 @@
         <developer>
             <id>janssk1</id>
             <name>Koen Janssens</name>
+        </developer>
+        <developer>
+            <id>mdr</id>
+            <name>Matt Russell</name>
         </developer>
     </developers>
     <properties>
@@ -104,10 +108,15 @@
             <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+        	  <groupId>com.github.mdr</groupId>
+        	  <artifactId>ascii-graphs_2.10</artifactId>
+        	  <version>0.0.4-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <scm>
-        <connection>scm:git:git@github.com:janssk1/maven-graph-plugin.git</connection>
-        <url>https://github.com/janssk1/maven-graph-plugin</url>
-        <developerConnection>scm:git:git@github.com:janssk1/maven-graph-plugin.git</developerConnection>
+        <connection>scm:git:git@github.com:mdr/maven-graph-plugin.git</connection>
+        <url>https://github.com/mdr/maven-graph-plugin</url>
+        <developerConnection>scm:git:git@github.com:mdr/maven-graph-plugin.git</developerConnection>
     </scm>
 </project>

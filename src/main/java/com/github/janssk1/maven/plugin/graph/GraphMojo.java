@@ -18,36 +18,57 @@ package com.github.janssk1.maven.plugin.graph;
 
 import com.github.janssk1.maven.plugin.graph.domain.ArtifactRevisionIdentifier;
 import com.github.janssk1.maven.plugin.graph.graph.Graph;
-import com.github.janssk1.maven.plugin.graph.graphml.GraphMLGenerator;
-import com.github.janssk1.maven.plugin.graph.graphml.SizeVertexRenderer;
+import com.github.mdr.ascii.java.GraphLayouter;
+
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProjectBuilder;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.List;
 
 /**
  * Goal which generates a set of dependency graphs
- *
+ * 
  * @goal graph
  * @phase process-sources
  */
-public class GraphMojo
-        extends AbstractMojo {
-
+public class GraphMojo extends AbstractMojo {
 
     /**
      * A comma separated list of report definitions
-     *
-     * @parameter expression="${graph.reports}" default-value="PACKAGE,COMPILE,RUNTIME,TEST,COMPILE-TRANSITIVE"
+     * 
+     * @parameter expression="${graph.reports}"
+     *            default-value="COMPILE"
      */
 
     private String reports;
+
+    /**
+     * @parameter expression="${graph.unicode}" default-value="true"
+     */
+    private boolean unicode;
+
+    /**
+     * @parameter expression="${graph.vertical}" default-value="false"
+     */
+    private boolean vertical;
+
+    /**
+     * @parameter expression="${graph.doubleVertices}" default-value="true"
+     */
+    private boolean doubleVertices;
+
+    /**
+     * @parameter expression="${graph.rounded}" default-value="false"
+     */
+    private boolean rounded;
+
+    /**
+     * @parameter expression="${graph.explicitAsciiBends}" default-value="false"
+     */
+    private boolean explicitAsciiBends;
 
     /**
      * @component
@@ -55,7 +76,6 @@ public class GraphMojo
      * @readonly
      */
     private MavenProjectBuilder mavenProjectBuilder;
-
 
     /**
      * @component
@@ -66,7 +86,7 @@ public class GraphMojo
 
     /**
      * Location of the file.
-     *
+     * 
      * @parameter expression="${project.groupId}"
      * @required
      * @readonly
@@ -75,7 +95,7 @@ public class GraphMojo
 
     /**
      * Location of the file.
-     *
+     * 
      * @parameter expression="${project.artifactId}"
      * @required
      * @readonly
@@ -84,24 +104,16 @@ public class GraphMojo
 
     /**
      * Location of the file.
-     *
+     * 
      * @parameter expression="${project.version}"
      * @required
      * @readonly
      */
     private String version;
 
-     /**
-     * Location of the file.
-     *
-     * @parameter expression="${project.build.directory}"
-     * @required
-     * @readonly
-     */
-    private File outputDirectory;
     /**
      * Maven's local repository.
-     *
+     * 
      * @parameter expression="${localRepository}"
      * @required
      * @readonly
@@ -111,7 +123,6 @@ public class GraphMojo
     public void execute()
             throws MojoExecutionException {
 
-
         getLog().info("Using graph.reports=" + reports);
         List<DependencyOptions> reportDefinitions = DependencyOptions.parseReportDefinitions(reports);
         ArtifactResolver artifactResolver = new MavenArtifactResolver(getLog(), localRepository, this.artifactFactory, mavenProjectBuilder);
@@ -120,17 +131,24 @@ public class GraphMojo
         }
     }
 
-
     private void buildGraph(ArtifactResolver artifactResolver, DependencyOptions options) throws MojoExecutionException {
         GraphBuilder graphBuilder = new BreadthFirstGraphBuilder(getLog(), artifactResolver);
         Graph graph = graphBuilder.buildGraph(new ArtifactRevisionIdentifier(artifactId, groupId, version), options);
-        GraphSerializer graphSerializer = new GraphMLGenerator();
-        try {
-            File file = new File(outputDirectory, this.artifactId + "-" + this.version + "-" + options.getGraphType() + (options.isIncludeAllTransitiveDependencies() ? "-TRANSITIVE":"") + "-deps.graphml");
-            graphSerializer.serialize(graph, new FileWriter(file), new RenderOptions().setVertexRenderer(new SizeVertexRenderer()));
-            getLog().info("Created dependency graph in " + file);
-        } catch (IOException e) {
-            throw new MojoExecutionException("Can't write to file", e);
-        }
+        getLog().info("Dependencies for " + options.getGraphType() + (options.isIncludeAllTransitiveDependencies() ? "-TRANSITIVE" : "") + ": ");
+        getLog().info("");
+        String diagram = AsciiGraphs.renderGraph(graph, graphLayouter());
+        for (String line : diagram.split("\n"))
+            getLog().info(line);
+        getLog().info("");
+    }
+
+    private GraphLayouter<String> graphLayouter() {
+        GraphLayouter<String> graphLayouter = new GraphLayouter<String>();
+        graphLayouter.setUnicode(unicode);
+        graphLayouter.setVertical(vertical);
+        graphLayouter.setDoubleVertices(doubleVertices);
+        graphLayouter.setExplicitAsciiBends(explicitAsciiBends);
+        graphLayouter.setRounded(rounded);
+        return graphLayouter;
     }
 }
