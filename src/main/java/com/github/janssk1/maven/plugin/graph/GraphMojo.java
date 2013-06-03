@@ -26,6 +26,9 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProjectBuilder;
 
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -46,6 +49,11 @@ public class GraphMojo extends AbstractMojo {
     private String reports;
 
     /**
+     * @parameter expression="${graph.encoding}"
+     */
+    private String encoding;
+
+    /**
      * @parameter expression="${graph.unicode}" default-value="true"
      */
     private boolean unicode;
@@ -56,7 +64,7 @@ public class GraphMojo extends AbstractMojo {
     private boolean vertical;
 
     /**
-     * @parameter expression="${graph.doubleVertices}" default-value="true"
+     * @parameter expression="${graph.doubleVertices}" default-value="false"
      */
     private boolean doubleVertices;
 
@@ -131,15 +139,30 @@ public class GraphMojo extends AbstractMojo {
         }
     }
 
+    private void println(String s) {
+        if (encoding == null) {
+            if (System.console() == null)
+                System.out.println(s);
+            else
+                System.console().writer().println(s);
+        } else
+            try {
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(System.out, encoding), true);
+                writer.println(s);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+    }
+    
     private void buildGraph(ArtifactResolver artifactResolver, DependencyOptions options) throws MojoExecutionException {
         GraphBuilder graphBuilder = new BreadthFirstGraphBuilder(getLog(), artifactResolver);
         Graph graph = graphBuilder.buildGraph(new ArtifactRevisionIdentifier(artifactId, groupId, version), options);
-        getLog().info("Dependencies for " + options.getGraphType() + (options.isIncludeAllTransitiveDependencies() ? "-TRANSITIVE" : "") + ": ");
-        getLog().info("");
+        println("Dependencies for " + options.getGraphType() + (options.isIncludeAllTransitiveDependencies() ? "-TRANSITIVE" : "") + ": ");
+        println("");
         String diagram = AsciiGraphs.renderGraph(graph, graphLayouter());
         for (String line : diagram.split("\n"))
-            getLog().info(line);
-        getLog().info("");
+            println(line);
+        println("");
     }
 
     private GraphLayouter<String> graphLayouter() {
