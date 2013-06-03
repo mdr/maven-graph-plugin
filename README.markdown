@@ -5,15 +5,17 @@ Usage
 
 You can run this without modifying your project with the following command:
 
-    mvn com.github.mdr:maven-dependencygraph-plugin:0.0.1:graph
+    mvn com.github.mdr:maven-dependencygraph-plugin:0.0.3:graph
 
 Larger graphs might need to be piped through a pager, e.g. `less -S`:
 
-    mvn com.github.mdr:maven-dependencygraph-plugin:0.0.1:graph | less -S
+    mvn com.github.mdr:maven-dependencygraph-plugin:0.0.3:graph | less -S
 
-You can also customise some of the drawing options:
+Or in a Windows cmd prompt, you can change the buffer width via Properties -> Layout -> Screen Buffer Size -> Width = 9999
 
-    mvn -Dgraph.vertical -Dgraph.rounded com.github.mdr:maven-dependencygraph-plugin:0.0.1:graph | less -S
+You can also customise some of the drawing options using system properties. For example:
+
+    mvn -Dgraph.vertical -Dgraph.rounded com.github.mdr:maven-dependencygraph-plugin:0.0.3:graph | less -S
 
 Options
 =======
